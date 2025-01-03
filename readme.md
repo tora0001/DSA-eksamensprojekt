@@ -8,13 +8,13 @@ PSEUDOCODE
    Fjern start knap
    Bestem størrelse af spillebræt
    Indlæs spillebræt
-   Kald funktion som randomizer bomber
+   Kald funktion som tilfældigt placerer bomber
    Kald funktion som afgør tal
    }
 
 3. Randomize bomber i vores grid/bane ved brug fisher algoritmen
 
-   function randomizeBombs () {
+   function placeBombs () {
    Bestem antal bomber der skal bruges i spillet
    placer bomber tilfældigt på spillebrættet
    }
