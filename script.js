@@ -1,7 +1,7 @@
 window.addEventListener("load", start);
 
 function start() {
-  console.log("Welcome to Jorden er giftig i Gaza-striben");
+  console.log("Welcome to bomb cleaner");
   document.querySelector("#start-game").addEventListener("click", startGame);
 }
 
