@@ -2,7 +2,7 @@
 
 window.addEventListener("load", start);
 
-let mines = 10;
+let mines = 15;
 let rows = 10;
 let cols = 10;
 let gameGrid = [];
@@ -51,15 +51,6 @@ function createGrid(rows, cols) {
   renderGrid();
 }
 
-// function yatesAlgo(array) {
-//   for (let i = 0; i < array.length - 1; i++) {
-//     const j = Math.floor(Math.random() * (i + 1));
-//     [array[i], array[j]] = [array[j], array[i]];
-//   }
-
-//   console.log(array);
-// }
-
 function renderGrid() {
   const container = document.querySelector("#game-container");
 
@@ -77,28 +68,60 @@ function renderGrid() {
   }
 }
 
-// function neighborAlgorithm(gameGrid, row, col)
-//   // const directions = [-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1];
-//   // for (let r = 0; r < rows; r++) {
-//   //   for (let c = 0; r < cols; c++)
-//   // }
+function neighborAlgorithm(gameGrid, row, col) {
+  const gameTile = document.querySelector(`button[data-row='${row}'][data-col='${col}']`);
+
+  const directions = [
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, -1],
+    [0, 1],
+    [1, -1],
+    [1, 0],
+    [1, 1],
+  ];
+
+  let mineCount = 0;
+
+  for (const [dr, dc] of directions) {
+    const newRow = row + dr;
+    const newCol = col + dc;
+
+    if (newRow >= 0 && newRow < gameGrid.length && newCol >= 0 && newCol < gameGrid[0].length) {
+      if (gameGrid[newRow][newCol] === -1) {
+        mineCount++;
+      }
+    }
+  }
+
+  console.log(`Mines around (${row}, ${col}): ${mineCount}`);
+
+  if (mineCount == 0) {
+    gameTile.textContent = "";
+  } else {
+    gameTile.textContent = mineCount;
+  }
+}
 
 function handleClick(row, col) {
   const tileValue = gameGrid[row][col];
   const gameTile = document.querySelector(`button[data-row='${row}'][data-col='${col}']`);
 
+  neighborAlgorithm(gameGrid, row, col);
+
+  console.log(gameTile);
+
   if (tileValue === -1) {
-    gameTile.textContent = "💣";
     gameLost();
   } else {
-    gameTile.textContent = tileValue === 0 ? "" : tileValue;
     gameTile.disabled = true;
   }
 }
 
-function revealCell() {}
+function winCheck() {
+  const remainingTiles = something;
 
-function winCondition() {
   if (remainingTiles == mines) {
     gameWon();
   } else {
@@ -106,23 +129,32 @@ function winCondition() {
   }
 }
 
-function lossCondition() {
-  if (clickedTile[i][j] == -1) {
-    gameLost();
-  } else {
-    return;
-  }
-}
-
 function gameWon() {
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const tileValue = gameGrid[row][col];
+      const gameTile = document.querySelector(`button[data-row='${row}'][data-col='${col}']`);
+      if (tileValue === -1) {
+        gameTile.textContent = "💣";
+      } else {
+        gameTile.disabled = true;
+      }
+    }
+  }
   console.log("You win!");
 }
 
 function gameLost() {
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const tileValue = gameGrid[row][col];
+      const gameTile = document.querySelector(`button[data-row='${row}'][data-col='${col}']`);
+      if (tileValue === -1) {
+        gameTile.textContent = "💣";
+      } else {
+        gameTile.disabled = true;
+      }
+    }
+  }
   console.log("You lost the game!");
 }
-
-// Load spillet med grid
-// Randomize bomber
-// Afgør tal ift. bomber
-// Når felt trykkes på, tjek hvilket felt det er.
