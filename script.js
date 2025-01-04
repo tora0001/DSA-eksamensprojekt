@@ -1,35 +1,38 @@
 "use strict";
 
 window.addEventListener("load", start);
-let mines = 9;
+
+let mines = 10;
+let rows = 10;
+let cols = 10;
+let gameGrid = [];
+
 function start() {
   console.log("Welcome to bomb cleaner");
   document.querySelector("#start-game").addEventListener("click", startGame);
-  createGrid(8, 8);
 }
 
 function startGame() {
   console.log("Game has started");
   document.querySelector("#start-game").remove();
+  createGrid(rows, cols);
 }
 
 function createGrid(rows, cols) {
-  let gameGrid = [];
-
-  for (let i = 0; i < rows; i++) {
-    gameGrid[i] = new Array(cols).fill(0);
+  for (let row = 0; row < rows; row++) {
+    gameGrid[row] = new Array(cols).fill(0);
   }
 
   let flattenedGrid = [];
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      flattenedGrid.push({ row: r, col: c, value: 0 });
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      flattenedGrid.push({ row: row, col: col, value: 0 });
     }
   }
 
   for (let i = 0; i < flattenedGrid.length - 1; i++) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [flattenedGrid[i], flattenedGrid[j]] = [flattenedGrid[j], flattenedGrid[i]];
+    const randomTile = Math.floor(Math.random() * (i + 1));
+    [flattenedGrid[i], flattenedGrid[randomTile]] = [flattenedGrid[randomTile], flattenedGrid[i]];
   }
   console.log(flattenedGrid);
 
@@ -37,13 +40,15 @@ function createGrid(rows, cols) {
     flattenedGrid[i].value = -1;
   }
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const flatGridIndex = flattenedGrid.find((element) => element.col === c && element.row === r);
-      gameGrid[r][c] = flatGridIndex.value;
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const flatGridIndex = flattenedGrid.find((gameTile) => gameTile.col === col && gameTile.row === row);
+      gameGrid[row][col] = flatGridIndex.value;
     }
   }
   console.log(gameGrid);
+
+  renderGrid();
 }
 
 // function yatesAlgo(array) {
@@ -55,7 +60,22 @@ function createGrid(rows, cols) {
 //   console.log(array);
 // }
 
-function placeMines() {}
+function renderGrid() {
+  const container = document.querySelector("#game-container");
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const gameTile = document.createElement("button");
+      gameTile.dataset.row = row;
+      gameTile.dataset.col = col;
+      gameTile.textContent = "";
+
+      gameTile.addEventListener("click", () => handleClick(row, col));
+
+      container.appendChild(gameTile);
+    }
+  }
+}
 
 // function neighborAlgorithm(gameGrid, row, col)
 //   // const directions = [-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1];
@@ -63,9 +83,17 @@ function placeMines() {}
 //   //   for (let c = 0; r < cols; c++)
 //   // }
 
-function registerClick() {
-  winCondition();
-  lossCondition();
+function handleClick(row, col) {
+  const tileValue = gameGrid[row][col];
+  const gameTile = document.querySelector(`button[data-row='${row}'][data-col='${col}']`);
+
+  if (tileValue === -1) {
+    gameTile.textContent = "💣";
+    gameLost();
+  } else {
+    gameTile.textContent = tileValue === 0 ? "" : tileValue;
+    gameTile.disabled = true;
+  }
 }
 
 function revealCell() {}
