@@ -2,7 +2,7 @@
 
 window.addEventListener("load", start);
 
-let mines = 15;
+let mines = 10;
 let rows = 10;
 let cols = 10;
 let gameGrid = [];
@@ -14,7 +14,7 @@ function start() {
 
 function startGame() {
   console.log("Game has started");
-  document.querySelector("#start-game").remove();
+  document.querySelector("#start-game").textContent = "RESTART GAME";
   createGrid(rows, cols);
 }
 
@@ -53,6 +53,7 @@ function createGrid(rows, cols) {
 
 function renderGrid() {
   const container = document.querySelector("#game-container");
+  container.innerHTML = "";
 
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
@@ -116,6 +117,7 @@ function handleClick(row, col) {
     gameLost();
   } else {
     gameTile.disabled = true;
+    // winCheck();
   }
 }
 
@@ -153,8 +155,8 @@ function gameLost() {
         gameTile.textContent = "💣";
       } else {
         gameTile.disabled = true;
+        gameTile.textContent = "";
       }
     }
   }
-  console.log("You lost the game!");
 }
