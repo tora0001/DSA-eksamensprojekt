@@ -15,6 +15,7 @@ function start() {
 
 function startGame() {
   console.log("Game has started");
+  document.querySelector("#lose-or-win").innerHTML = "";
   document.querySelector("#start-game").textContent = "RESTART GAME";
   createGrid(rows, cols);
 }
@@ -37,7 +38,7 @@ function createGrid(rows, cols) {
     const randomTile = Math.floor(Math.random() * (i + 1));
     [flattenedGrid[i], flattenedGrid[randomTile]] = [flattenedGrid[randomTile], flattenedGrid[i]];
   }
-  console.log(flattenedGrid);
+  // console.log(flattenedGrid);
 
   for (let i = 0; i < mines; i++) {
     flattenedGrid[i].value = -1;
@@ -49,7 +50,7 @@ function createGrid(rows, cols) {
       gameGrid[row][col] = flatGridIndex.value;
     }
   }
-  console.log(gameGrid);
+  // console.log(gameGrid);
 
   calculateAllBombCounts();
   renderGrid();
@@ -121,7 +122,7 @@ function calculateAllBombCounts() {
 }
 
 // Checks tileValue, changes textContent and decides wether to call revealTilesAlgo... Not really a neighborAlgorithm anymore
-function neighborAlgorithm(gameGrid, row, col) {
+function handleTileValue(gameGrid, row, col) {
   const gameTile = document.querySelector(`button[data-row='${row}'][data-col='${col}']`);
   const tileValue = gameGrid[row][col];
   console.log(`Mines around (${row}, ${col}): ${tileValue}`);
@@ -202,7 +203,7 @@ function handleClick(row, col) {
   const tileValue = gameGrid[row][col];
   const gameTile = document.querySelector(`button[data-row='${row}'][data-col='${col}']`);
 
-  neighborAlgorithm(gameGrid, row, col);
+  handleTileValue(gameGrid, row, col);
 
   if (tileValue === -1) {
     gameLost();
@@ -240,6 +241,7 @@ function gameWon() {
       }
     }
   }
+  document.querySelector("#lose-or-win").innerHTML = "YOU WIN";
   console.log("You win!");
 }
 
@@ -256,5 +258,6 @@ function gameLost() {
       }
     }
   }
+  document.querySelector("#lose-or-win").innerHTML = "YOU LOSE";
   console.log("You lost!");
 }
