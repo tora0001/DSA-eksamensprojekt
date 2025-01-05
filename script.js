@@ -29,7 +29,7 @@ function createGrid(rows, cols) {
       flattenedGrid.push({ row: row, col: col, value: 0 });
     }
   }
-
+//fisher-yates-shuffle
   for (let i = 0; i < flattenedGrid.length - 1; i++) {
     const randomTile = Math.floor(Math.random() * (i + 1));
     [flattenedGrid[i], flattenedGrid[randomTile]] = [flattenedGrid[randomTile], flattenedGrid[i]];
@@ -48,6 +48,7 @@ function createGrid(rows, cols) {
   }
   console.log(gameGrid);
 
+  calculateAllBombCounts();
   renderGrid();
 }
 
@@ -69,9 +70,8 @@ function renderGrid() {
   }
 }
 
-function neighborAlgorithm(gameGrid, row, col) {
-  const gameTile = document.querySelector(`button[data-row='${row}'][data-col='${col}']`);
-
+// Gives a value to every tile once grid loads
+function calculateAllBombCounts() {
   const directions = [
     [-1, -1],
     [-1, 0],
@@ -83,25 +83,93 @@ function neighborAlgorithm(gameGrid, row, col) {
     [1, 1],
   ];
 
-  let mineCount = 0;
-
-  for (const [dr, dc] of directions) {
-    const newRow = row + dr;
-    const newCol = col + dc;
-
-    if (newRow >= 0 && newRow < gameGrid.length && newCol >= 0 && newCol < gameGrid[0].length) {
-      if (gameGrid[newRow][newCol] === -1) {
-        mineCount++;
+  for (let row = 0; row < gameGrid.length; row++) {
+    for (let col = 0; col < gameGrid[row].length; col++) {
+      if (gameGrid[row][col] === -1) {
+        continue; 
       }
+
+      let mineCount = 0;
+
+      for (const [dr, dc] of directions) {
+        const newRow = row + dr;
+        const newCol = col + dc;
+
+        if (newRow >= 0 && newRow < gameGrid.length && newCol >= 0 && newCol < gameGrid[0].length) {
+          if (gameGrid[newRow][newCol] === -1) { 
+            mineCount++;
+          }
+        }
+      }
+      gameGrid[row][col] = mineCount;
     }
   }
+}
 
-  console.log(`Mines around (${row}, ${col}): ${mineCount}`);
+// Checks tileValue, changes textContent and decides wether to call revealTilesAlgo... Not really a neighborAlgorithm anymore
+function neighborAlgorithm(gameGrid, row, col) {
+  const gameTile = document.querySelector(`button[data-row='${row}'][data-col='${col}']`);
+  const tileValue = gameGrid[row][col];
+  console.log(`Mines around (${row}, ${col}): ${tileValue}`);
 
-  if (mineCount == 0) {
+
+  if (tileValue === 0) {
     gameTile.textContent = "";
+    revealTilesAlgo(row, col); 
   } else {
-    gameTile.textContent = mineCount;
+    gameTile.textContent = tileValue;
+  }
+}
+
+// Clicks every neighbor tile, and repeats for every clicked tile that also has value 0. Flood fill algorithm using BFS.
+function revealTilesAlgo(row, col) {
+  const directions = [
+    [-1, -1], [-1, 0], [-1, 1],
+    [0, -1], [0, 1],
+    [1, -1], [1, 0], [1, 1],
+  ];
+
+  const queue = [[row, col]]; // a Queue datastructure(Array that we use as a queue)
+  const visited = new Set(); // a Set datastructure
+
+  while (queue.length > 0) {
+    const [currentRow, currentCol] = queue.shift(); 
+
+
+    if (//checks for already visited tiles
+      currentRow < 0 ||
+      currentRow >= gameGrid.length ||
+      currentCol < 0 ||
+      currentCol >= gameGrid[0].length ||
+      visited.has(`${currentRow},${currentCol}`)
+    ) {
+      continue;
+    }
+
+    visited.add(`${currentRow},${currentCol}`);
+
+    const gameTile = document.querySelector(`button[data-row='${currentRow}'][data-col='${currentCol}']`);
+    const tileValue = gameGrid[currentRow][currentCol];
+
+    if (tileValue === -1) {
+      continue;
+    }
+
+    gameTile.disabled = true; 
+
+    if (tileValue > 0) {
+
+      gameTile.textContent = tileValue;
+    } else {
+
+      gameTile.textContent = "";
+
+      for (const [dr, dc] of directions) {
+        const newRow = currentRow + dr;
+        const newCol = currentCol + dc;
+        queue.push([newRow, newCol]);
+      }
+    }
   }
 }
 
@@ -112,6 +180,7 @@ function handleClick(row, col) {
   neighborAlgorithm(gameGrid, row, col);
 
   console.log(gameTile);
+  console.log(tileValue);
 
   if (tileValue === -1) {
     gameLost();
@@ -119,6 +188,7 @@ function handleClick(row, col) {
     gameTile.disabled = true;
     // winCheck();
   }
+  
 }
 
 function winCheck() {
