@@ -1,35 +1,43 @@
-Repository: https://github.com/tora0001/DSA-eksamensprojekt
-Deployment: https://tora0001.github.io/DSA-eksamensprojekt/
+## Beskrivelse af produkt:
+
+Som vores produkt har vi valgt at lave vores egen version af det klassiske hjernevrider spil Minestryger, som vi har valgt at kalde Bomb Cleaner.
+Her får spilleren en spilleflade med 100 felter, hvor formålet er at finde ud af hvilke 10 felter der gemmer sig bomber bag ved.
+Dette gør man ved at klikke på felterne, som derefter afslører hvor mange bomber der er omkring felterne ved hjælp af tal.
+Hvis spilleren mistænker at et felt gemmer på en bombe, kan de sætte et flag.
+Når der kun er bomber tilbage på spillefladen, har man vundet spillet.
+
+## Sådan spiller du
+
+1. **Start spillet:** Åbn siden i din browser via Live Server Extension.
+2. **Klik på felter:** Afslør feltet og se antallet af nærliggende bomber.
+3. **Sæt flag:** Højreklik for at markere felter, du tror gemmer en bombe.
+4. **Vind spillet:** Afslør alle sikre felter uden at klikke på en bombe.
+5. **Genstart spillet:** Klik på "Restart Game" for at starte en ny runde.
+
+## Teknologi
+
+- **HTML5** til strukturen af spillet.
+- **CSS** til brugergrænsefladens design.
+- **JavaScript** til spillets logik og funktionalitet.
 
 Algorithms:
 
 1. Fisher Yates Shuffle
 2. Neighbor counting
-3. Flood fill(BFS)
+3. Flood fill (BFS)
 
 Datastructures:
 
 1. Grid / 2D array
-2. Scoreboard
+2. 1D array
 3. Queue
 4. Stack
-5. Hash Table
+5. Objects
+6. Set
 
-Randomizer algorithms:
-https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
-https://en.wikipedia.org/wiki/Reservoir_sampling
-https://stackoverflow.com/questions/47005560/difference-between-fisher-yates-shuffle-and-reservoir-sampling
+## Links
 
-Flood filling:
-https://en.wikipedia.org/wiki/Flood_fill#:~:text=The%20traditional%20flood%2Dfill%20algorithm,them%20to%20the%20replacement%20color.
+Repository: https://github.com/tora0001/DSA-eksamensprojekt  
+Deployment: https://tora0001.github.io/DSA-eksamensprojekt/
 
-OM EKSAMEN
-Til selve eksamen vil du få lov til at demonstrere produktet ganske kort - 3-4
-minutter - hvorefter du bliver eksamineret i opbygningen af produktet såvel som
-de anvendte algoritmer. Fokus vil især være på hvordan du har kodet
-algoritmen, og sammenhængen mellem algoritme-beskrivelsen (fx din
-pseudokode) og den konkrete implementation.
-Der vil også være nogle (få) spørgsmål til resten af pensum uafhængigt af det
-afleverede produkt.
-Du bliver givet en samlet karakter, der ikke er vægtet i forhold til produkt,
-projekt eller præsentation.
+Lavet af Lucas, Tobias & Emil
