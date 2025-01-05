@@ -21,15 +21,17 @@ Når der kun er bomber tilbage på spillefladen, har man vundet spillet.
 Algorithms:
 1. Fisher Yates Shuffle
 2. Neighbor counting
-3. Flood fill(BFS)
+3. Flood fill (BFS)
 
 Datastructures:
 1. Grid / 2D array
-2. Scoreboard
+2. 1D array
 3. Queue
 4. Stack
-5. Hash Table
+5. Objects
+6. Set 
 
+## Links
 Repository: https://github.com/tora0001/DSA-eksamensprojekt  
 Deployment: https://tora0001.github.io/DSA-eksamensprojekt/
 
