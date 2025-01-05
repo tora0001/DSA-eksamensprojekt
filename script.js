@@ -6,6 +6,7 @@ let mines = 10;
 let rows = 10;
 let cols = 10;
 let gameGrid = [];
+let clickedTiles = 0;
 
 function start() {
   console.log("Welcome to bomb cleaner");
@@ -19,6 +20,8 @@ function startGame() {
 }
 
 function createGrid(rows, cols) {
+  clickedTiles = 0;
+
   for (let row = 0; row < rows; row++) {
     gameGrid[row] = new Array(cols).fill(0);
   }
@@ -29,7 +32,7 @@ function createGrid(rows, cols) {
       flattenedGrid.push({ row: row, col: col, value: 0 });
     }
   }
-//fisher-yates-shuffle
+  //fisher-yates-shuffle
   for (let i = 0; i < flattenedGrid.length - 1; i++) {
     const randomTile = Math.floor(Math.random() * (i + 1));
     [flattenedGrid[i], flattenedGrid[randomTile]] = [flattenedGrid[randomTile], flattenedGrid[i]];
@@ -61,9 +64,20 @@ function renderGrid() {
       const gameTile = document.createElement("button");
       gameTile.dataset.row = row;
       gameTile.dataset.col = col;
-      gameTile.textContent = "";
+      gameTile.textContent = " ";
 
       gameTile.addEventListener("click", () => handleClick(row, col));
+      gameTile.addEventListener("contextmenu", function putFlag(i) {
+        i.preventDefault();
+        if (gameTile.textContent === "🚩") {
+          gameTile.textContent = " ";
+        } else if (["", "1", "2", "3", "4", "5"].includes(gameTile.textContent)) {
+          return false;
+        } else {
+          gameTile.textContent = "🚩";
+        }
+        return false;
+      });
 
       container.appendChild(gameTile);
     }
@@ -86,7 +100,7 @@ function calculateAllBombCounts() {
   for (let row = 0; row < gameGrid.length; row++) {
     for (let col = 0; col < gameGrid[row].length; col++) {
       if (gameGrid[row][col] === -1) {
-        continue; 
+        continue;
       }
 
       let mineCount = 0;
@@ -96,7 +110,7 @@ function calculateAllBombCounts() {
         const newCol = col + dc;
 
         if (newRow >= 0 && newRow < gameGrid.length && newCol >= 0 && newCol < gameGrid[0].length) {
-          if (gameGrid[newRow][newCol] === -1) { 
+          if (gameGrid[newRow][newCol] === -1) {
             mineCount++;
           }
         }
@@ -112,31 +126,36 @@ function neighborAlgorithm(gameGrid, row, col) {
   const tileValue = gameGrid[row][col];
   console.log(`Mines around (${row}, ${col}): ${tileValue}`);
 
-
   if (tileValue === 0) {
     gameTile.textContent = "";
-    revealTilesAlgo(row, col); 
+    revealTilesAlgo(row, col);
   } else {
     gameTile.textContent = tileValue;
+    addClickedTiles(gameTile);
   }
 }
 
 // Clicks every neighbor tile, and repeats for every clicked tile that also has value 0. Flood fill algorithm using BFS.
 function revealTilesAlgo(row, col) {
   const directions = [
-    [-1, -1], [-1, 0], [-1, 1],
-    [0, -1], [0, 1],
-    [1, -1], [1, 0], [1, 1],
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, -1],
+    [0, 1],
+    [1, -1],
+    [1, 0],
+    [1, 1],
   ];
 
   const queue = [[row, col]]; // a Queue datastructure(Array that we use as a queue)
   const visited = new Set(); // a Set datastructure
 
   while (queue.length > 0) {
-    const [currentRow, currentCol] = queue.shift(); 
+    const [currentRow, currentCol] = queue.shift();
 
-
-    if (//checks for already visited tiles
+    if (
+      //checks for already visited tiles
       currentRow < 0 ||
       currentRow >= gameGrid.length ||
       currentCol < 0 ||
@@ -155,14 +174,13 @@ function revealTilesAlgo(row, col) {
       continue;
     }
 
-    gameTile.disabled = true; 
-
+    gameTile.disabled = true;
     if (tileValue > 0) {
-
       gameTile.textContent = tileValue;
+      addClickedTiles(gameTile);
     } else {
-
       gameTile.textContent = "";
+      addClickedTiles(gameTile);
 
       for (const [dr, dc] of directions) {
         const newRow = currentRow + dr;
@@ -173,28 +191,36 @@ function revealTilesAlgo(row, col) {
   }
 }
 
+function addClickedTiles(gameTile) {
+  if (!gameTile.classList.contains("clicked")) {
+    clickedTiles++;
+    gameTile.classList.add("clicked");
+  }
+}
+
 function handleClick(row, col) {
   const tileValue = gameGrid[row][col];
   const gameTile = document.querySelector(`button[data-row='${row}'][data-col='${col}']`);
 
   neighborAlgorithm(gameGrid, row, col);
 
-  console.log(gameTile);
-  console.log(tileValue);
-
   if (tileValue === -1) {
     gameLost();
   } else {
     gameTile.disabled = true;
-    // winCheck();
+    // gameTile.classList.add("clicked");
+    addClickedTiles(gameTile);
+    winCheck();
   }
-  
 }
 
 function winCheck() {
-  const remainingTiles = something;
+  //totalTiles
+  //clickedTiles
+  // const remainingTiles = totalTiles - clickedTiles;
+  console.log(clickedTiles);
 
-  if (remainingTiles == mines) {
+  if (clickedTiles === 90) {
     gameWon();
   } else {
     return;
@@ -210,6 +236,7 @@ function gameWon() {
         gameTile.textContent = "💣";
       } else {
         gameTile.disabled = true;
+        gameTile.textContent = "";
       }
     }
   }
@@ -229,4 +256,5 @@ function gameLost() {
       }
     }
   }
+  console.log("You lost!");
 }
